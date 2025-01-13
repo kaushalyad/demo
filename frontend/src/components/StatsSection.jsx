@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import LottieAnimation from "./LottieAnimation";
+// import LottieAnimation from "./LottieAnimation";
 import smartimg from "../assets/smartbg.png";
 import stat1 from "../assets/stat1.png";
 import stat2 from "../assets/stat2.png";
@@ -172,7 +172,7 @@ function StatsSection() {
           // overflow: "hidden", // Ensure the border radius is applied to the content
         }}
       >
-        <LottieAnimation
+        {/* <LottieAnimation
           loop={false}
           animation={priceAnimation}
           threshold={1}
@@ -192,7 +192,7 @@ function StatsSection() {
               borderRadius: "16px", // Correct syntax for height
             },
           }}
-        />
+        /> */}
 
         <Typography
           sx={{
