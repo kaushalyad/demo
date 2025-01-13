@@ -55,7 +55,7 @@ const PlanSection = ({ sessionId }) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+    import.meta.env.VITE_API_BASE_URL || "https://demo2-g4uz.onrender.com";
 
   // const handleSubscribe = async () => {
   //   setLoading(true);
@@ -150,7 +150,7 @@ const PlanSection = ({ sessionId }) => {
         amount: price, // amount in paise
       };
       const response = await axios.post(
-        "http://localhost:3000/api/createOrder",
+        "https://demo2-g4uz.onrender.com/api/createOrder",
         options
       );
       const data = await response.data;
@@ -173,7 +173,7 @@ const PlanSection = ({ sessionId }) => {
           };
 
           axios
-            .post("http://localhost:3000/api/verifyPayment", options2)
+            .post("https://demo2-g4uz.onrender.com/api/verifyPayment", options2)
             .then((res) => {
               if (res.data.success) {
                 console.log("Payment Successful");
