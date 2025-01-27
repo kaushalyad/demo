@@ -4,13 +4,14 @@ export default {
   theme: {
     extend: {
       screens: {
-        min_mobile: "250px", //mini_mobile
-        mobile: "360px", //mobile
-        large_mobile: "640px", // lerge mobile
-        tablet: "768px", // tablet
-        laptop: "1024px", // laptop
-        desktop: "1280px", // desktop
-        large_desktop: "1536px", // large desktop
+        xs: "360px", // Extra small devices (custom breakpoint)
+        sm: "540px", // Small devices (default Tailwind)
+        md: "768px", // Medium devices (default Tailwind)
+        lg: "1024px", // Large devices (default Tailwind)
+        xl: "1280px", // Extra large devices (default Tailwind)
+        "2xl": "1536px", // 2x Extra large devices (default Tailwind)
+        "3xl": "1920px", // Custom breakpoint for 3K screens
+        "4xl": "2560px", // Custom breakpoint for 4K screens
       },
       fontFamily: {
         urbanist: ["Urbanist", "sans-serif"], // Add Urbanist font

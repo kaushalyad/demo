@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import OtpInput from "./OtpInput";
+import OtpInput from "../OtpInput";
 import { styled, css } from "@mui/system";
 import axios from "axios";
 import { Modal as BaseModal, Button, Typography } from "@mui/material";
-import left_arrow_icon from "../assets/left_arrow_icon.svg";
-import edit_icon from "../assets/edit_icon.svg";
+import left_arrow_icon from "../../assets/left_arrow_icon.svg";
+import edit_icon from "../../assets/edit_icon.svg";
 import { useNavigate } from "react-router-dom";
-
-const NotReceivedOtp = ({
-  handleResendOtp,
-  setOtpAreaVisible,
-  otpAreaVisible,
-}) => {
+import { toast } from "sonner";
+const NotReceivedOtp = ({ handleResendOtp }) => {
   return (
     <>
       <Typography
@@ -80,12 +76,10 @@ export default function OtpArea({
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [timeLeft, setTimeLeft] = useState(30);
   const navigate = useNavigate();
-
-  console.log(otp);
-  const api_url = "http://dev.azure.tap.health";
+  const apiUrl = import.meta.env.VITE_API_URL;
+  // console.log(otp);
   // Timer for resend visibility
   useEffect(() => {
-    loadScript("https://checkout.razorpay.com/v1/checkout.js").then(() => {});
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
 
@@ -104,38 +98,30 @@ export default function OtpArea({
       return;
     }
     axios
-      .post(api_url + "/api/auth/verify-otp", { phone: mobileNumber, otp: otp })
+      .post(apiUrl + "/api/auth/verify-otp", {
+        phone: mobileNumber,
+        otp: otp,
+      })
       .then((response) => {
-        console.log(response);
-        // const cookie = response.headers["Set-Cookie"];
-        // const sessionId = response.headers["Sessionid"];
-        // const session = response.headers.get("Sessionid");
-        // console.log(sessionId);
-        // store the sesssionId in the session
-        // localStorage.setItem("sessionid", sessionId);
-        console.log(response.headers);
-
-        // console.log(res.headers['sessionid']);
-        // localStorage.setItem("Cookie", cookie ? cookie : "");
-        // localStorage.setItem("sessionid", res.headers["sessionid"]);
-        // Extract and log the userId
+        // console.log(response);
+        // console.log(response.headers);
         const userId = response.data?.user?.id;
-        console.log("User ID:", userId);
-
+        // console.log("User ID:", userId);
         // Set OTP validation state and visibility
         setIsValidOtp(true);
         setOtpAreaVisible(false);
         onLoginSuccess(response.headers.get("sessionid"));
-        navigate("/plans/newYearOffer"); // Navigate to /plans if logged in
-
-        // Perform payment
-
         // Close the modal/popup
+        toast.success("Login successful! Enjoy your experience with us.", {
+          style: {
+            color: "green",
+          },
+        });
         close();
-        console.log("Yes, done");
-
+        // console.log("Yes, done");
+        navigate("/plans");
         // Log the user data
-        console.log(response.data.user);
+        // console.log(response.data.user);
 
         // Check if the user already has the planId in localStorage
         const userPlans =
@@ -149,8 +135,8 @@ export default function OtpArea({
         }
       })
       .catch((error) => {
-        console.log("not correct post");
-        console.error(error);
+        // console.log("not correct post");
+        // console.error(error);
         setIsValidOtp(false);
       });
   };
@@ -162,66 +148,6 @@ export default function OtpArea({
     setIsResendVisible(false);
     setTimeLeft(30);
     handleSignIn();
-  };
-  // const onPayment = async (price, planId, userId) => {
-  //   // create order
-  //   try {
-  //     const options = {
-  //       planId: planId,
-  //       amount: price, // amount in paise
-  //     };
-  //     const response = await axios.post(
-  //       "http://dev.azure.tap.health",
-  //       options
-  //     );
-  //     const data = await response.data;
-  //     console.log(data);
-  //     const paymentObject = new window.Razorpay({
-  //       key: "rzp_live_kcB9R3YS04DMNn",
-  //       amount: price, // amount in paise
-  //       order_id: data.id,
-  //       ...data,
-  //       handler: function (response) {
-  //         // handle success
-  //         console.log(response);
-  //         // make a payment request to your backend
-  //         const options2 = {
-  //           order_id: response.razorpay_order_id,
-  //           payment_id: response.razorpay_payment_id,
-  //           signature: response.razorpay_signature,
-  //         };
-  //         axios
-  //           .post("http://dev:3000/api/verifyPayment", options2)
-  //           .then((res) => {
-  //             if (res.data.success) {
-  //               localStorage.setItem(`plans_${userId}`, JSON.stringify(planId));
-
-  //               console.log("Payment Successful");
-  //               alert("Payment Successful");
-  //               // onPaymentSuccess();
-  //             } else {
-  //               console.log("Payment Failed");
-  //               alert("Payment Failed");
-  //               // handle payment failure
-  //             }
-  //           });
-  //       },
-  //     });
-  //     paymentObject.open();
-  //   } catch (error) {
-  //     // handle error
-  //     console.log("not found api end points");
-  //     console.log(error);
-  //   }
-  // };
-  const loadScript = (src) => {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.src = src;
-      script.onload = resolve;
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
   };
 
   return (
@@ -309,25 +235,6 @@ export default function OtpArea({
             </button>
           </div>
           <div className="mt-[20px]">
-            {/* <OtpInput
-              value={otp}
-              onChange={setOtp}
-              numInputs={4}
-              shouldAutoFocus={true}
-              renderSeparator={<span className="bg-red-500 ml-[12px]"></span>}
-              renderInput={(props) => (
-                <input
-                  className={`w-[73px] h-[88px] rounded-[1234px] focus:ring-0 text-[40px] font-extrabold leading-[56px] tracking-[-0.015em] 
-                  text-center  focus:outline-none font-urbanist
-                  ${
-                    isValidOtp
-                      ? "focus:border-[#2563EB]"
-                      : "border-2 border-[#DA1E2E]  "
-                  }
-                `}
-                />
-              )}
-            /> */}
             <OtpInput
               length={4}
               onOtpSubmit={onOtpSubmit}

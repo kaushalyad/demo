@@ -68,7 +68,7 @@ const OtpInput = ({
             onChange={(e) => handleChange(index, e)}
             onClick={() => handleClick(index)}
             onKeyDown={(e) => handleKeyDown(index, e)}
-            className={`w-[73px] h-[88px] rounded-[1234px] focus:ring-0 text-[40px] font-extrabold leading-[56px] tracking-[-0.015em] 
+            className={`w-[73px] h-[88px] bg-[#FFFFFF] rounded-[1234px] focus:ring-0 text-[40px] font-extrabold leading-[56px] tracking-[-0.015em] 
                 text-center  focus:outline-none font-urbanist
                 ${
                   isValidOtp

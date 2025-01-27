@@ -17,9 +17,9 @@ const MealCaraousel = ({ cards }) => {
   }, [emblaApi, onSelect]);
 
   return (
-    <div>
-      <div className="max-w-[360px] overflow-hidden " ref={emblaRef}>
-        <div className="flex touch-pan-y m-6 gap-3 px-4">
+    <>
+      <div className=" overflow-hidden " ref={emblaRef}>
+        <div className="flex touch-pan-y  gap-3 px-3">
           {cards.map((slide, index) => (
             <div
               className="flex-shrink-0 flex justify-left items-center  gap-4"
@@ -45,7 +45,7 @@ const MealCaraousel = ({ cards }) => {
           />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

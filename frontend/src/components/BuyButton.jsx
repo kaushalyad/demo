@@ -2,8 +2,10 @@ import React from "react";
 import { Typography } from "@mui/material";
 import Right_icon from "../assets/Right_icon.svg";
 
-const BuyButton = ({ month = 12, price = 1, planId, onClick }) => {
-  const handleClick = () => {
+const BuyButton = ({ month = 12, price = 1, onClick }) => {
+  // console.log("razorpayPlanId", planId);
+  const handleClick = (e) => {
+    e.preventDefault();
     if (onClick) {
       onClick();
     }
@@ -25,7 +27,7 @@ const BuyButton = ({ month = 12, price = 1, planId, onClick }) => {
             color: "#FFFFFF",
           }}
         >
-          ₹{price}
+          <span className="sm:text-[27px]">₹{price}</span>
         </Typography>
         <Typography
           sx={{
@@ -35,7 +37,7 @@ const BuyButton = ({ month = 12, price = 1, planId, onClick }) => {
             color: "#D1D5DB",
           }}
         >
-          {month} months plan
+          <span className="sm:text-[24px]">{month} months plan</span>
         </Typography>
       </div>
       <div className="flex items-center gap-2">
@@ -47,12 +49,12 @@ const BuyButton = ({ month = 12, price = 1, planId, onClick }) => {
             color: "#FFFFFF",
           }}
         >
-          Buy plan
+          <span className="sm:text-[27px]">Buy plan</span>
         </Typography>
         <img
           src={Right_icon}
           alt="Right Arrow Icon"
-          className="h-[24px] w-[24px]"
+          className="h-[24px] w-[24px] sm:h-[35px] sm:w-[35px]"
         />
       </div>
     </button>

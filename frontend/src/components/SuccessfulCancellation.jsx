@@ -75,7 +75,7 @@ const SuccessfulCancellation = () => {
           </Typography>
         </div>
         <div className="w-[100%] flex justify-center ">
-          <CustomButton text="Continue" handleClick={() => {}} />
+          <CustomButton text="Continue" onClick={() => {}} />
         </div>
       </div>
     </div>

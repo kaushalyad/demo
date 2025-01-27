@@ -144,7 +144,7 @@ const CancelFeedback = () => {
             isVisible={isVisible}
             text="Cancel subscription"
             bgColor="#DA1E2E"
-            handleOpen={handleOpen}
+            onClick={handleOpen}
           />
         </div>
       </div>

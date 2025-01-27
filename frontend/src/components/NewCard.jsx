@@ -3,9 +3,9 @@ import React from "react";
 
 const NewCard = ({ imgSrc, heading, description }) => {
   return (
-    <div className="w-[280px] h-[206px] p-[16px] gap-[var(--Globals10)] rounded-[16px] bg-[#F2F5F9] flex flex-col justify-between">
-      <img className="w-[52px] h-[52px]" src={imgSrc} alt="icon" />
-      <div className="text-sm font-medium text-[var(--c1)] flex flex-col gap-[4px]">
+    <div className="xs:w-[280px] xs:h-[206px] sm:w-[360px] sm:h-[280px] p-[16px] gap-[4px] rounded-[16px] bg-[#F2F5F9] flex flex-col justify-between">
+      <img className="xs:w-[52px] xs:h-[52px] sm:w-[65px] sm:h-[65px]" src={imgSrc} alt="icon" />
+      <div className="text-sm font-medium  flex flex-col gap-[4px]">
         <Typography
           sx={{
             fontFamily: "Urbanist, sans-serif",

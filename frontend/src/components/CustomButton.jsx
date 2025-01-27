@@ -4,10 +4,12 @@ const CustomButton = ({
   bgColor = "#2563EB",
   text = "Proceed To Buy",
   link,
-  handleOpen,
-  handleClick,
+  onClick,
   isVisible = true,
 }) => {
+  const handleClick = () => {
+    onClick && onClick();
+  };
   return (
     <div
       style={{ backgroundColor: bgColor }}
@@ -22,7 +24,7 @@ const CustomButton = ({
             textUnderlinePosition: "from-font",
             textDecorationSkipInk: "none",
           }}
-          onClick={handleOpen}
+          onClick={handleClick}
         >
           {text}
         </button>

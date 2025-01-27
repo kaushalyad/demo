@@ -16,11 +16,9 @@ const DoctorCard = ({
       <div
         style={{
           background: "linear-gradient(180deg, #DCE1E8 0%, #9EA7B8 100%)",
-          width: "264px",
-          height: "340px",
           borderRadius: "24px",
         }}
-        className="flex flex-col justify-end"
+        className="flex flex-col justify-end xs:w-[284px] xs:h-[360px] sm:w-[380px] sm:h-[420px] md:w-[460px] md:h-[520px] lg:w-[520px] lg:h-[620px]"
       >
         <img
           src={imageURL}

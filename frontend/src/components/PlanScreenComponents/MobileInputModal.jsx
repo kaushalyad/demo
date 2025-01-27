@@ -3,10 +3,9 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 import { styled, css } from "@mui/system";
 import { Modal as BaseModal, Button, Typography } from "@mui/material";
-import chevron_down_icon from "../assets/chevron-down.svg";
+import chevron_down_icon from "../../assets/chevron-down.svg";
 import axios from "axios";
 import OtpArea from "./OtpArea";
-import { useAuth } from "../hooks/useAuth";
 export default function MobileInputModal({
   open,
   handleClose,
@@ -16,8 +15,9 @@ export default function MobileInputModal({
 }) {
   const [mobileNumber, setMobileNumber] = React.useState("");
   const [otpAreaVisible, setOtpAreaVisible] = React.useState(false);
-  const api_url = "http://dev.azure.tap.health";
   const [isValidNumber, setValidNumber] = React.useState(true);
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const validateMobileNumber = (mobileNumber) => {
     const mobileRegex = /^[6-9]\d{9}$/;
     return mobileRegex.test(mobileNumber);
@@ -30,21 +30,23 @@ export default function MobileInputModal({
   const handleSignIn = () => {
     if (isValidNumber) {
       axios
-        .post(api_url + "/api/auth/signin", { phone: mobileNumber })
+        .post(apiUrl + "/api/auth/signin", {
+          phone: mobileNumber,
+        })
         .then((response) => {
           // handle success response
           setOtpAreaVisible(true);
-          console.log(response);
+          // console.log(response);
         })
         .catch((error) => {
           // handle error response
-          console.error(error);
+          // console.error(error);
         });
     } else {
       alert("Invalid Mobile Number");
     }
   };
-  console.log(mobileNumber);
+  // console.log(mobileNumber);
   return otpAreaVisible ? (
     <OtpArea
       open={open}

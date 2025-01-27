@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import gift from "../assets/coupon.png";
 import man from "../assets/45yrsoldmanexercice.png";
 import support from "../assets/Frame 4037.png";
-// import LottieAnimation from "./LottieAnimation";
+import LottieAnimation from "./LottieAnimation";
 import plateanimation from "../assets/animations/pltes.json";
 import blood from "../assets/blood.png";
 
@@ -123,7 +123,7 @@ const FoodCard = () => {
                     // height: "170px",
                   }}
                 >
-                  {/* <LottieAnimation
+                  <LottieAnimation
                     animation={plateanimation}
                     threshold={1}
                     width={195}
@@ -133,7 +133,7 @@ const FoodCard = () => {
                       position: "relative",
                       top: "-25px",
                     }}
-                  /> */}
+                  />
                 </Box>
               ) : (
                 <Box

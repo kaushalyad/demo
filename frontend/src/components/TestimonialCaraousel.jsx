@@ -68,7 +68,7 @@ const TestimonialCaraousel = () => {
             >
               <img
                 src={image}
-                className="w-full max-w-xs md:max-w-sm lg:max-w-md rounded-lg cursor-pointer object-cover"
+                className="w-full cursor-pointer object-cover"
                 onClick={() => openVideo(videoUrl)}
                 alt={`Slide ${id}`}
               />
@@ -79,28 +79,28 @@ const TestimonialCaraousel = () => {
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black">
-          {/* <div className="relative w-full h-screen"> */}
-          {/* <ReactHlsPlayer
+          <div className="relative w-full h-screen">
+            {/* <ReactHlsPlayer
             src={currentVideoUrl}
             autoPlay={true}
             controls={true}
             width="auto"
             height="auto"
           /> */}
-          <ReactPlayer
-            url={currentVideoUrl}
-            controls
-            playing
-            width="auto"
-            height="auto"
-          />
-          <button
-            onClick={closeVideo}
-            className="absolute top-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full"
-          >
-            Close ✕
-          </button>
-          {/* </div> */}
+            <ReactPlayer
+              url={currentVideoUrl}
+              controls
+              playing
+              width="auto"
+              height="auto"
+            />
+            <button
+              onClick={closeVideo}
+              className="absolute top-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full"
+            >
+              Close ✕
+            </button>
+          </div>
         </div>
       )}
     </div>

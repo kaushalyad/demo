@@ -35,7 +35,7 @@ export const Features = ({ featuresHeading = "Features" }) => {
           key={index}
           className="flex flex-row justify-between items-center p-4 px-6"
         >
-          <div className="flex items-center space-x-1 col-span-1 w-5/6">
+          <div className="flex items-center space-x-1 col-span-1 w-9/10">
             <Typography
               sx={{
                 color: "#252E49",

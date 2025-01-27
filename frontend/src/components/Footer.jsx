@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { useState } from "react";
-import DownArrow from "../assets/downarrow.svg";
+
 const faqs = [
   {
     question: "Can I still enjoy my favorite foods while managing diabetes?",
@@ -45,7 +45,7 @@ const faqs = [
   },
 ];
 
-const Footer = ({ heading = "Frequently asked questions" }) => {
+const Footer = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleFAQ = (index) => {
@@ -53,22 +53,9 @@ const Footer = ({ heading = "Frequently asked questions" }) => {
   };
 
   return (
-    <div className="px-6 pb-10 text-[#252E49] bg-white">
-      <Typography
-        sx={{
-          fontFamily: "Urbanist",
-          fontSize: "16px",
-          fontWeight: 800,
-          lineHeight: "19.2px",
-          textAlign: "left",
-          textUnderlinePosition: "from-font",
-          textDecorationSkipInk: "none",
-        }}
-      >
-        {heading}
-      </Typography>
+    <div className="pl-6 pb-10">
       {faqs.map((faq, index) => (
-        <div key={index} className="pt-[16px]">
+        <div key={index} className="mb-4">
           <button
             className="w-full text-left flex justify-between items-center py-2 text-lg font-semibold bg-transparent focus:outline-none"
             onClick={() => toggleFAQ(index)}
@@ -76,10 +63,10 @@ const Footer = ({ heading = "Frequently asked questions" }) => {
             <Typography
               sx={{
                 textAlign: "left",
-                color: "#252E49",
+                color: "#FFFFFF",
                 fontFamily: "Urbanist",
-                fontWeight: 500,
-                fontSize: "14px",
+                fontWeight: 600,
+                fontSize: "16px",
               }}
             >
               {faq.question}
@@ -88,33 +75,31 @@ const Footer = ({ heading = "Frequently asked questions" }) => {
             <span>
               {openIndex === index ? (
                 <svg
-                  className="w-6 h-6 rotate-180 transform text-neutral-400"
+                  className="w-6 h-6 rotate-180 transform"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 20 21"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4.16663 8.03516L7.87864 11.7472C9.05021 12.9187 10.9497 12.9187 12.1213 11.7472L15.8333 8.03516"
-                  ></path>
+                    d="M4.16699 8L7.879 11.712C9.05058 12.8836 10.9501 12.8836 12.1216 11.712L15.8337 8"
+                    stroke="#818BA0"
+                    strokeWidth="1.5"
+                  />
                 </svg>
               ) : (
                 <svg
-                  className="w-6 h-6 text-neutral-400"
+                  className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 20 21"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4.16663 8.03516L7.87864 11.7472C9.05021 12.9187 10.9497 12.9187 12.1213 11.7472L15.8333 8.03516"
-                  ></path>
+                    d="M4.16699 8L7.879 11.712C9.05058 12.8836 10.9501 12.8836 12.1216 11.712L15.8337 8"
+                    stroke="#818BA0"
+                    strokeWidth="1.5"
+                  />
                 </svg>
               )}
             </span>
@@ -123,7 +108,7 @@ const Footer = ({ heading = "Frequently asked questions" }) => {
             <Typography
               sx={{
                 textAlign: "left",
-                color: "black",
+                color: "#FFFFFF",
                 fontFamily: "Urbanist",
                 fontWeight: 400,
                 fontSize: "16px",
@@ -132,7 +117,7 @@ const Footer = ({ heading = "Frequently asked questions" }) => {
               {faq.answer}
             </Typography>
           )}
-          <hr className="#DCE1E8 mt-2" />
+          <hr className="border-gray-700 mt-2" />
         </div>
       ))}
     </div>

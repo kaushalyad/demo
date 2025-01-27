@@ -3,7 +3,6 @@ import useEmblaCarousel from "embla-carousel-react";
 import I1 from "../assets/doc_1.png";
 import I2 from "../assets/doc_2.png";
 import I3 from "../assets/I3.png";
-import { Typography } from "@mui/material";
 import DoctorCard from "./DoctorCard";
 import male_doctor from "../assets/male_doctor.png";
 import woman_doctor from "../assets/woman_doctor.png";
@@ -68,60 +67,16 @@ const Experts = () => {
   }, []);
 
   return (
-    <div>
-      {/* Typography Below Image */}
-      {/* <div className="flex-col">
-              <Typography
-                sx={{
-                  marginTop: "12px", // Add space between image and text
-                  color: "#252E49",
-                  fontFamily: "Urbanist",
-                  fontWeight: 700,
-                  fontSize: "24px",
-                  lineHeight: "28.8px",
-                  textAlign: "left", // Center text for consistency
-                }}
-              >
-                {name}
-              </Typography>
-              <Typography
-                sx={{
-                  marginTop: "12px", // Add space between image and text
-                  color: "#252E49",
-                  fontFamily: "Urbanist",
-                  fontWeight: 700,
-                  fontSize: "16px",
-                  lineHeight: "19.2px",
-                  textAlign: "left", // Center text for consistency
-                }}
-              >
-                {exp}
-              </Typography>
-              <Typography
-                sx={{
-                  marginTop: "12px", // Add space between image and text
-                  color: "#252E49",
-                  fontFamily: "Urbanist",
-                  fontWeight: 400,
-                  fontSize: "14px",
-                  lineHeight: "19.6px",
-                  textAlign: "left", // Center text for consistency
-                }}
-              >
-                {desc}
-              </Typography>
-              </div> */}
-      <div className="max-w-[360px] overflow-hidden " ref={emblaRef}>
-        <div className="flex touch-pan-y  gap-3 px-6">
-          {doctorCards.map((slide, index) => (
-            <div
-              className="flex-shrink-0 flex justify-left items-center  gap-4"
-              key={index}
-            >
-              {slide}
-            </div>
-          ))}
-        </div>
+    <div className=" overflow-hidden " ref={emblaRef}>
+      <div className="flex touch-pan-y  xs:gap-5 sm:gap-12 md:gap-16 px-6">
+        {doctorCards.map((slide, index) => (
+          <div
+            className="flex-shrink-0 flex justify-left items-center  gap-4"
+            key={index}
+          >
+            {slide}
+          </div>
+        ))}
       </div>
     </div>
   );

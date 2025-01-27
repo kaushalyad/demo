@@ -8,11 +8,9 @@ const PlanPicker = ({
   actualPrice,
   discountedPrice,
   isSelected,
-  id,
   offerName,
   onClick,
-  plans,
-  selectedIndex,
+  isPromotional,
 }) => {
   const typographyStyles = {
     fontFamily: "Urbanist, sans-serif",
@@ -20,8 +18,7 @@ const PlanPicker = ({
     textUnderlinePosition: "from-font",
     textDecorationSkipInk: "none",
   };
-
-  
+  // console.log(isPromotional,promotionalCode);
   return (
     <div
       className={`bg-white  justify-between rounded-[12px]  flex flex-col text-black cursor-pointer ${
@@ -34,7 +31,7 @@ const PlanPicker = ({
       }}
       onClick={onClick}
     >
-      {offerName && (
+      {isPromotional && offerName && (
         <div className="bg-[#2563EB] text-white py-2 px-3 border-[#2563EB]  border-r-[1px] border-b-[1px]">
           <Typography
             sx={{
