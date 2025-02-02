@@ -78,10 +78,10 @@ const PostPayment = () => {
           />
         </Box>
       ) : (
-        <div className="bg-[#FFFFFF] w-[100%]">
+        <div className="bg-[#FFFFFF] xs:w-[100%] min-h-[100vh]">
           <div
             style={{ backgroundImage: `url(${bg_color_image})` }}
-            className="bg-[#FFFFFF] w-[100vw] min-h-[70vh] bg-cover bg-center flex flex-col items-center px-5"
+            className="bg-[#FFFFFF] w-[100vw] min-h-[40vh] bg-cover bg-center flex flex-col items-center px-5"
           >
             <div className="flex items-center gap-1 my-[50px]">
               <Typography
@@ -107,10 +107,10 @@ const PostPayment = () => {
                 alt="Tap Health Logo"
               />
             </div>
-            <div
-              style={{ backgroundImage: `url(${bg_image})` }}
-              className="w-[100%] min-h-[380px] bg-cover bg-center "
-            ></div>
+            <img
+              src={bg_image}
+              className="w-[100%] xs:min-h-[380px] sm:min-h-[480px] bg-cover bg-center "
+            />
           </div>
           <div className="px-10">
             <Typography
@@ -141,6 +141,7 @@ const PostPayment = () => {
             <CustomButton
               text="Download Tap Health"
               link="https://play.google.com/store/apps/details?id=com.taphealthapp"
+              className={" text-[#FFFFFF]"}
             />
           </div>
         </div>

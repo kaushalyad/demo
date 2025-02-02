@@ -1,108 +1,100 @@
 import React, { useState, useEffect } from "react";
 import left_icon from "../assets/Left icon.svg";
-import background_image from "../assets/Frame 26080462.png"; // Assuming this is your image path
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { styled, css } from "@mui/system";
-import { Modal as BaseModal, Button, Typography } from "@mui/material";
-import HeaderContent from "./HeaderContent";
+import { Modal as BaseModal, Typography } from "@mui/material";
 import CustomButton from "./CustomButton";
 import CustomTextArea from "./CustomTextArea";
-import CancelSubscriptionModal from "./CancelSubscriptionModal";
-const CancelFeedback = () => {
+import { useNavigate } from "react-router-dom";
+const CancelFeedback = ({
+  purpose = "Request Refund",
+  buttonText = "Cancel subscription",
+}) => {
   const [text, setText] = useState("");
-  const [isVisible, setVisible] = useState(false);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [isVisible, setVisible] = useState(true);
+
   const handleTextChange = (event) => {
     setText(event.target.value);
   };
-  useEffect(() => {
-    if (text.length > 0) setVisible(true);
-    else setVisible(false);
-  }, [text]);
+
+  const navigate = useNavigate();
   return (
     <>
-      {/* Set background image */}
-      <Modal
-        aria-labelledby="unstyled-modal-title"
-        aria-describedby="unstyled-modal-description"
-        open={open}
-        onClose={handleClose}
-        slots={{ backdrop: StyledBackdrop }}
-      >
-        <ModalContent
-          sx={{
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            borderRadius: "16px 16px 0px 0px",
-            display: "flex",
-            minWidth: "100%",
-            minHeight: "250px",
-          }}
-        >
-          <CancelSubscriptionModal />
-        </ModalContent>
-      </Modal>
-      <div className="w-[100vw] h-[100vh]  bg-[#F2F5F9]  flex flex-col justify-evenly">
-        <div className="flex justify-start  items-center">
-          <img className="w-[54px] h-[54px]" src={left_icon} alt="back_icon" />
-          <Typography
-            color="#252E49"
-            sx={{
-              fontFamily: "Urbanist",
-              fontSize: "16px",
-              fontWeight: 700,
-              lineHeight: "19.2px",
-              letterSpacing: "-0.008em",
-              textAlign: "left",
-              textUnderlinePosition: "from-font",
-              textDecorationSkipInk: "none",
-            }}
-          >
-            Request Refund
-          </Typography>
-        </div>
-        <div className="px-[20px] flex flex-col">
-          <Typography
-            sx={{
-              fontFamily: "Urbanist",
-              fontSize: "24px",
-              fontWeight: 700,
-              lineHeight: "28.8px",
-              color: "#252E49",
-              letterSpacing: "-0.008em",
-              textAlign: "left",
-              textUnderlinePosition: "from-font",
-              textDecorationSkipInk: "none",
-            }}
-          >
-            Why are you cancelling?
-          </Typography>
-          <Typography
-            sx={{
-              fontFamily: "Urbanist",
-              fontSize: "16px",
-              fontWeight: 500,
-              lineHeight: "19.2px",
-              marginTop: "5px",
-              textAlign: "left",
-              color: "#5D6A85",
-              textUnderlinePosition: "from-font",
-              textDecorationSkipInk: "none",
-            }}
-          >
-            This helps us improve and serve you better
-          </Typography>
-        </div>
-        <div className="flex w-[100%] items-center flex-col gap-2 justify-center">
-          <HeaderContent
+      <div className="w-[100vw] h-[100vh]  bg-[#F2F5F9]  flex flex-col justify-between pb-6 py-2 ">
+        <div className="flex flex-col gap-5">
+          <div className="flex justify-start  items-center">
+            <button
+              className=" h-[100%]"
+              onClick={() => {
+                if (buttonText == "Get refund") {
+                  navigate("/manage-subscription/request-refund");
+                } else {
+                  navigate("/manage-subscription/cancel-subscription");
+                }
+              }}
+            >
+              <img
+                className="w-[50px] h-[50px]"
+                src={left_icon}
+                alt="back_icon"
+              />
+            </button>
+            <Typography
+              color="#252E49"
+              sx={{
+                fontFamily: "Urbanist",
+                fontSize: "16px",
+                fontWeight: 700,
+                lineHeight: "19.2px",
+                letterSpacing: "-0.008em",
+                textAlign: "left",
+                textUnderlinePosition: "from-font",
+                textDecorationSkipInk: "none",
+              }}
+            >
+              {purpose}
+            </Typography>
+          </div>
+          <div className="px-[20px] flex flex-col">
+            <Typography
+              sx={{
+                fontFamily: "Urbanist",
+                fontSize: "24px",
+                fontWeight: 700,
+                lineHeight: "28.8px",
+                color: "#252E49",
+                letterSpacing: "-0.008em",
+                textAlign: "left",
+                textUnderlinePosition: "from-font",
+                textDecorationSkipInk: "none",
+              }}
+            >
+              Why are you cancelling?
+            </Typography>
+            <Typography
+              sx={{
+                fontFamily: "Urbanist",
+                fontSize: "16px",
+                fontWeight: 500,
+                lineHeight: "19.2px",
+                marginTop: "5px",
+                textAlign: "left",
+                color: "#5D6A85",
+                textUnderlinePosition: "from-font",
+                textDecorationSkipInk: "none",
+              }}
+            >
+              This helps us improve and serve you better
+            </Typography>
+          </div>
+          {/* <div className="flex w-[100%] items-center flex-col gap-2 justify-center">
+         <div className="w-[95%]">
+         <HeaderContent
             content={"Not helping me improve"}
             className="rounded-[12px] py-[25px]"
           />
+         </div>
           <HeaderContent
             content={"I like it, but just not using it"}
             className="rounded-[12px] py-[25px]"
@@ -131,20 +123,34 @@ const CancelFeedback = () => {
             </Typography>
           </span>
           <div class="border-t-2 border-solid border-[#9EA7B8] flex-grow"></div>
+        </div> */}
+          <div className="flex justify-center items-center ">
+            <CustomTextArea
+              placeholder="Type your reason here..."
+              value={text}
+              onChange={handleTextChange}
+            />
+          </div>
         </div>
-        <div className="flex justify-center items-center ">
-          <CustomTextArea
-            placeholder="Type your reason here..."
-            value={text}
-            onChange={handleTextChange}
-          />
-        </div>
-        <div className="flex justify-center w-[100%] ">
+        <div
+          className="flex justify-center w-[100%] "
+          onClick={() => {
+            if (buttonText == "Get refund") {
+              navigate(
+                "/manage-subscription/request-refund/refund-feedback/refund-successful"
+              );
+            } else {
+              navigate(
+                "/manage-subscription/cancel-subscription/cancel-feedback/cancelled"
+              );
+            }
+          }}
+        >
           <CustomButton
+            text={buttonText}
+            bgColor="#F2F5F9"
+            className=" text-[#DA1E2E] text-[12px] "
             isVisible={isVisible}
-            text="Cancel subscription"
-            bgColor="#DA1E2E"
-            onClick={handleOpen}
           />
         </div>
       </div>

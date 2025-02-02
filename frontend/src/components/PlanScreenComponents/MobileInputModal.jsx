@@ -12,7 +12,11 @@ export default function MobileInputModal({
   price,
   planId,
   onLoginSuccess,
+  isPromotional,
+  promotionCode,
+  isPartner
 }) {
+  console.log('promotioncode', promotionCode)
   const [mobileNumber, setMobileNumber] = React.useState("");
   const [otpAreaVisible, setOtpAreaVisible] = React.useState(false);
   const [isValidNumber, setValidNumber] = React.useState(true);
@@ -52,10 +56,13 @@ export default function MobileInputModal({
       open={open}
       close={handleClose}
       mobileNumber={mobileNumber}
+      isPromotional={isPromotional}
+      promotionCode={promotionCode}
       handleSignIn={handleSignIn}
       setOtpAreaVisible={setOtpAreaVisible}
       price={price}
       planId={planId}
+      isPartner={isPartner}
       onLoginSuccess={onLoginSuccess}
     />
   ) : (
@@ -107,9 +114,8 @@ export default function MobileInputModal({
             Please enter your phone number
           </Typography>
           <div
-            className={`px-[16px] py-[12px] flex justify-left items-center bg-white rounded-[99px] gap-2 ${
-              !isValidNumber ? "border border-red-500" : ""
-            }`}
+            className={`px-[16px] py-[12px] flex justify-left items-center bg-white rounded-[99px] gap-2 ${!isValidNumber ? "border border-red-500" : ""
+              }`}
           >
             <Typography
               sx={{
@@ -127,8 +133,9 @@ export default function MobileInputModal({
             </Typography>
             <img src={chevron_down_icon} />
             <input
-              type="text"
+              type="number"
               placeholder="9931018857"
+              inputMode="numeric"
               value={mobileNumber}
               onChange={handleInputChange}
               className=" border-l-[2px] px-[12px] outline-none w-[100%] bg-white"

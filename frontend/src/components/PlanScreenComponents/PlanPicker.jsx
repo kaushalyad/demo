@@ -1,6 +1,4 @@
 import { Typography } from "@mui/material";
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 const PlanPicker = ({
   month,
@@ -11,6 +9,7 @@ const PlanPicker = ({
   offerName,
   onClick,
   isPromotional,
+  padding,
 }) => {
   const typographyStyles = {
     fontFamily: "Urbanist, sans-serif",
@@ -21,8 +20,8 @@ const PlanPicker = ({
   // console.log(isPromotional,promotionalCode);
   return (
     <div
-      className={`bg-white  justify-between rounded-[12px]  flex flex-col text-black cursor-pointer ${
-        isSelected ? "opacity-100" : "opacity-40"
+      className={` w-[100%]  justify-between rounded-[12px]  flex flex-col text-black cursor-pointer ${
+        isSelected ? "opacity-100 bg-[#EDF5FF]" : "opacity-40 bg-[#FFFFFF]"
       } transition-opacity duration-300`}
       style={{
         borderColor: isSelected ? "#2563EB" : "#DCE1E8",
@@ -46,37 +45,26 @@ const PlanPicker = ({
           </Typography>
         </div>
       )}
-      <div className="flex justify-between py-4 px-3 gap-4">
+      <div
+        className={` flex justify-between pl-3 pr-5 gap-4 ${padding} sm:p-4`}
+      >
         <div className="flex items-center gap-2">
           <input
             type="radio"
-            className="w-5 h-5 border-2 border-[#2563EB] rounded-full"
+            className="w-5 h-5 border-2 border-[#2563EB] rounded-full text-[#2563EB]"
             checked={isSelected}
             onChange={onClick}
             name="plan"
           />
-          <div>
-            <Typography
-              sx={{
-                ...typographyStyles,
-                fontSize: "16px",
-                fontWeight: 700,
-                lineHeight: "19.2px",
-                textAlign: "left",
-              }}
-            >
+          <div className="ml-2 flex flex-col">
+            <span className="text-[16px] font-bold leading-[19.2px] text-left sm:text-[20px]">
               {month}
-              <span className="ml-2">months plan</span>
-            </Typography>
-            <Typography
-              sx={{
-                ...typographyStyles,
-                fontSize: "12px",
-                textAlign: "left",
-              }}
-            >
+              <span className="ml-2 sm:text-2xl">months plan</span>
+            </span>
+
+            <span className="font-urbanist text-[12px] text-left font-normal leading-[16.8px] tracking-[-0.003em] sm:text-[20px]">
               {description}
-            </Typography>
+            </span>
           </div>
         </div>
 
@@ -94,31 +82,13 @@ const PlanPicker = ({
               &#8377;{discountedPrice}
             </Typography>
           ) : (
-            <div>
-              <Typography
-                sx={{
-                  ...typographyStyles,
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  lineHeight: "14.4px",
-                  textAlign: "left",
-                  textDecorationLine: "line-through",
-                  color: "#818BA0",
-                }}
-              >
-                &#8377;{actualPrice}
-              </Typography>
-              <Typography
-                sx={{
-                  ...typographyStyles,
-                  fontSize: "28px",
-                  fontWeight: 800,
-                  lineHeight: "33.6px",
-                  textAlign: "right",
-                }}
-              >
-                &#8377;{discountedPrice}
-              </Typography>
+            <div className="flex flex-col sm:gap-1">
+              <span className="text-[11px] font-medium leading-[14.4px] text-left line-through text-[#818BA0] sm:text-[18px]">
+                ₹{actualPrice}
+              </span>
+              <span className="text-[28px] font-extrabold leading-[33.6px] text-right sm:text-[35px]">
+                {discountedPrice === 0 ? "Free" : `₹${discountedPrice}`}
+              </span>
             </div>
           )}
         </div>

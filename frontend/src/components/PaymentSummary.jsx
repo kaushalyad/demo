@@ -1,5 +1,4 @@
 import { Typography } from "@mui/material";
-import React from "react";
 import download_icon from "../assets/download_icon.svg";
 import master_card_icon from "../assets/icons/master_card_icon.svg";
 import visa_card_icon from "../assets/icons/visa_card_icon.svg";
@@ -138,7 +137,7 @@ const PaymentSummary = ({ paymentSummaryData }) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-center gap-1 my-5 cursor-pointer" onClick={handleInvoiceDownload}>
+      {/* <div className="flex justify-center gap-1 my-5 cursor-pointer" onClick={handleInvoiceDownload}>
         <img src={download_icon} alt="Download Icon" />
         <Typography
           sx={{
@@ -151,7 +150,7 @@ const PaymentSummary = ({ paymentSummaryData }) => {
         >
           Download Invoice
         </Typography>
-      </div>
+      </div> */}
     </div>
   );
 };

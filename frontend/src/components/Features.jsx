@@ -48,7 +48,7 @@ export const Features = ({ featuresHeading = "Features" }) => {
             >
               {feature.title}
             </Typography>
-            <img src={information_icon} />
+            {/* <img src={information_icon} /> */}
           </div>
           {feature.included && (
             <img

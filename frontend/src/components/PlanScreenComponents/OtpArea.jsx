@@ -67,9 +67,13 @@ export default function OtpArea({
   mobileNumber,
   setOtpAreaVisible,
   onLoginSuccess,
-  price = 1,
-  planId = "newYearOffer",
+  promotionCode,
+  isPromotional,
+  planId,
+  isPartner = false,
 }) {
+  console.log("otp", promotionCode);
+  console.log("otpid", planId);
   const [isValidOtp, setIsValidOtp] = useState(true);
   const [otp, setOtp] = useState("");
   const [isResendVisible, setIsResendVisible] = useState(false);
@@ -77,6 +81,8 @@ export default function OtpArea({
   const [timeLeft, setTimeLeft] = useState(30);
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
+  const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
+
   // console.log(otp);
   // Timer for resend visibility
   useEffect(() => {
@@ -92,54 +98,102 @@ export default function OtpArea({
     return () => window.removeEventListener("resize", handleResize);
   }, [timeLeft, isResendVisible]);
 
-  const handleVerifyOTP = (otp) => {
+  const handleVerifyOTP = async (otp) => {
     if (otp.length !== 4) {
       setIsValidOtp(false);
       return;
     }
-    axios
-      .post(apiUrl + "/api/auth/verify-otp", {
+
+    try {
+      // Verify OTP
+      const verifyResponse = await axios.post(`${apiUrl}/api/auth/verify-otp`, {
         phone: mobileNumber,
         otp: otp,
-      })
-      .then((response) => {
-        // console.log(response);
-        // console.log(response.headers);
-        const userId = response.data?.user?.id;
-        // console.log("User ID:", userId);
-        // Set OTP validation state and visibility
-        setIsValidOtp(true);
-        setOtpAreaVisible(false);
-        onLoginSuccess(response.headers.get("sessionid"));
-        // Close the modal/popup
-        toast.success("Login successful! Enjoy your experience with us.", {
-          style: {
-            color: "green",
-          },
-        });
-        close();
-        // console.log("Yes, done");
-        navigate("/plans");
-        // Log the user data
-        // console.log(response.data.user);
-
-        // Check if the user already has the planId in localStorage
-        const userPlans =
-          JSON.parse(localStorage.getItem(`plans_${userId}`)) || [];
-
-        if (userPlans === planId) {
-          alert("You already have this plan.");
-        } else {
-          // Add the new planId to the user's plans
-          // onPayment(price, planId, userId);
-        }
-      })
-      .catch((error) => {
-        // console.log("not correct post");
-        // console.error(error);
-        setIsValidOtp(false);
       });
+
+      const userId = verifyResponse.data?.user?.id;
+      const sessionId = verifyResponse.headers["sessionid"];
+      toast.success("Login Successful!");
+      setIsValidOtp(true);
+      setOtpAreaVisible(false);
+      onLoginSuccess(sessionId);
+      close();
+      if (isPartner) navigate("/beurer/success");
+      if (!isPartner) await createSubscription(sessionId);
+    } catch (error) {
+      console.error("OTP Verification Error:", error);
+      setIsValidOtp(false);
+    }
   };
+
+  const createSubscription = async (sessionId) => {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/api/subscription/create`,
+        {
+          planId,
+          promotionCode: isPromotional ? promotionCode : "",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            sessionid: sessionId,
+          },
+        }
+      );
+
+      const data = response.data?.data;
+
+      if (data) {
+        await initiateRazorpayPayment(data, sessionId);
+      } else {
+        console.log("Error");
+      }
+    } catch (error) {
+      console.error("Subscription Creation Error:", error);
+    }
+  };
+
+  const initiateRazorpayPayment = async (data, sessionId) => {
+    const options = {
+      key: razorpayKeyId,
+      subscription_id: data.subscriptionId,
+      name: "Tap Health",
+      currency: "INR",
+      amount: data.nextBillingAmount,
+      description: "Subscription Payment",
+      handler: async (response) => {
+        try {
+          await axios.post(
+            `${apiUrl}/api/payment/verify`,
+            {
+              type: "SUBSCRIPTION",
+              payload: {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_subscription_id: response.razorpay_subscription_id,
+                razorpay_signature: response.razorpay_signature,
+              },
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                sessionid: sessionId,
+              },
+            }
+          );
+
+          navigate("payment/success");
+        } catch (error) {
+          console.error("Payment Verification Error:", error);
+          navigate("payment/failure");
+        }
+      },
+    };
+
+    const razorpay = new window.Razorpay(options);
+    razorpay.open();
+  };
+
   const onOtpSubmit = (otp) => {
     setOtp(otp);
     handleVerifyOTP(otp);
@@ -147,7 +201,6 @@ export default function OtpArea({
   const handleResendOtp = () => {
     setIsResendVisible(false);
     setTimeLeft(30);
-    handleSignIn();
   };
 
   return (

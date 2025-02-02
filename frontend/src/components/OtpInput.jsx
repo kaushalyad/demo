@@ -1,12 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 
-const OtpInput = ({
-  length = 4,
-  onOtpSubmit = () => {},
-  isValidOtp,
-  onLoginSuccess,
-}) => {
+const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
   const [otp, setOtp] = useState(new Array(length).fill(""));
   const inputRefs = useRef([]);
 
@@ -63,6 +58,7 @@ const OtpInput = ({
           <input
             key={index}
             type="text"
+            inputMode="numeric"
             ref={(input) => (inputRefs.current[index] = input)}
             value={value}
             onChange={(e) => handleChange(index, e)}

@@ -9,7 +9,7 @@ const SuccessfulCancellation = () => {
       <img src={left_arrow_icon} />
       <div className="bg-[#FFFFFF]  h-[90%] w-[100vw] flex flex-col justify-between items-center py-[32px] px-5">
         <div>
-          <img src={success_icon} className="w-[155px] h-[155px]" />
+          <img src={success_icon} className="w-[145px] h-[145px]" />
         </div>
         <div>
           <Typography

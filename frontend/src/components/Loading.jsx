@@ -4,7 +4,7 @@ import ContentLoader from "react-content-loader";
 const Loading = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full">
-      <h3 className=" font-semibold text-gray-700 mb-4 xs:text-sm sm:text-xl">
+      <h3 className="text-xl font-semibold text-gray-700 mb-4">
         Finding the perfect plans just for you
         <span className="loading-dots">.</span>
       </h3>

@@ -91,8 +91,8 @@ const TestimonialCaraousel = () => {
               url={currentVideoUrl}
               controls
               playing
-              width="auto"
-              height="auto"
+              width="100%"
+              height="100%"
             />
             <button
               onClick={closeVideo}

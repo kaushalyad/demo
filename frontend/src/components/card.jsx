@@ -41,7 +41,6 @@ const FoodCard = () => {
       description: [
         "Steps Tracking for managing your activity level",
         "Calorie counting based on your meal logs",
-        "Medicine reminders so that you never miss your dose",
         "Glucose level tracking to make lifestyle adjustments in real time",
       ],
       image: support,
@@ -52,7 +51,6 @@ const FoodCard = () => {
       index: 4,
       title: "Smart support that adapts to your daily needs",
       description: [
-        "Medicine Reminders to never miss a dose.",
         "Dynamic Diet Adjustments to balance your last meal's impact.",
         "Exercise Recommendations tailored to your needs.",
         "AI-Powered Answers, validated by experts.",

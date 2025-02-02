@@ -1,178 +1,186 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PlanPicker from "../components/PlanScreenComponents/PlanPicker";
 import Features from "../components/Features";
 import BuyButton from "../components/BuyButton";
 import bgImg from "../assets/Hero.png";
 import topnav from "../assets/Top Nav.png";
-import { toast } from "sonner";
-import { Toaster } from "sonner";
 import { Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import MobileInputModal from "../components/PlanScreenComponents/MobileInputModal";
 import Loading from "../components/Loading";
+import Timer from "../components/Timer";
 const PlanScreen = () => {
   const navigate = useNavigate();
-
   const [originalPlans, setOriginalPlans] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(1);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const { isAuthenticated, sessionId, login, logout } = useAuth();
+  const { isAuthenticated, sessionId, login } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false); // Initialize based on isAuthenticated
-
-  const handleOpen = () => setIsModalOpen(true); // Function to open modal
+  const [promotionsData, setPromotionsData] = useState([]);
   const handleClose = () => setIsModalOpen(false); // Function to close modal
-
   const apiUrl = import.meta.env.VITE_API_URL;
   const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
+  const [subscribed, setSubscribed] = useState(false)
 
   const handleLoginSuccess = (newSessionId) => {
     login(newSessionId);
   };
 
-  const handleSubscribe = async (price, planId, isPromotional, promotionCode) => {
+  console.log('subscribed status', subscribed)
+
+  const subscriptionStatus = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/subscription`, {
+        headers: { sessionid: sessionId },
+      });
+      const data = response.data;
+      if (
+        data?.data?.status === "ACTIVE"
+      ) {
+        setSubscribed(true);
+      }
+      else {
+        setSubscribed(false)
+      }
+    } catch (error) {
+      console.error("Error fetching subscription status:", error);
+      setSubscribed(false)
+    }
+  };
+
+  const handleSubscribe = async (planId, isPromotional, promotionCode) => {
+    console.log('isPromotional', isPromotional)
+    console.log('promotioncode', promotionCode)
+    console.log('promotioncode', planId)
     if (!isAuthenticated) {
       setIsModalOpen(true);
       return;
     }
-  
-    try {
-      // Sending the subscription creation request
-      const response = await axios.post(
-        `${apiUrl}/api/subscription/create`,
-        {
-          planId,
-          ...(isPromotional && { promotionCode }),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            sessionid: sessionId,
-          }
-        }
-      );
-  
-      const data = response.data?.data;
-  
-      // Check for successful subscription creation
-      if (data) {
-        toast.success(
-          "Successfully created subscription, moving to the payment page",
+
+
+    await subscriptionStatus();
+
+    if (!subscribed) {
+      try {
+        // Sending the subscription creation request
+        const response = await axios.post(
+          `${apiUrl}/api/subscription/create`,
           {
-            style: { color: "green" },
+            planId,
+            promotionCode: isPromotional ? promotionCode : "",
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              sessionid: sessionId,
+            },
           }
         );
-  
-        const options = {
-          key: razorpayKeyId, // Razorpay Key
-          subscription_id: data.subscriptionId, // Subscription ID from API
-          name: "Tap Health",
-          currency: "INR",
-          amount: data.nextBillingAmount,
-          description: "Subscription Payment",
-          handler: async (response) => {
-            try {
-              // Verify the payment response
-              await axios.post(
-                `${apiUrl}/api/payment/verify`,
-                {
-                  type: "SUBSCRIPTION",
-                  payload: {
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_subscription_id: response.razorpay_subscription_id,
-                    razorpay_signature: response.razorpay_signature,
+
+        const data = response.data?.data;
+        console.log('...', data);
+        // Check for successful subscription creation
+        if (data) {
+          const options = {
+            key: razorpayKeyId, // Razorpay Key
+            subscription_id: data.subscriptionId, // Subscription ID from API
+            name: "Tap Health",
+            currency: "INR",
+            amount: data.nextBillingAmount,
+            description: "Subscription Payment",
+            handler: async (response) => {
+              try {
+                // Verify the payment response
+                await axios.post(
+                  `${apiUrl}/api/payment/verify`,
+                  {
+                    type: "SUBSCRIPTION",
+                    payload: {
+                      razorpay_payment_id: response.razorpay_payment_id,
+                      razorpay_subscription_id: response.razorpay_subscription_id,
+                      razorpay_signature: response.razorpay_signature,
+                    },
                   },
-                },
-                {
-                  headers: {
-                    "Content-Type": "application/json",
-                    sessionid: sessionId,
-                  },
-                }
-              );
-  
-              navigate("payment/success");
-              setSuccess("Subscription successful!");
-            } catch (error) {
-              console.error("Verification Error:", error);
-              navigate("payment/failure");
-  
-              const errorMessage =
-                error.response?.data?.message || "Payment verification failed.";
-              toast.error(errorMessage, { style: { color: "red" } });
-              setError(errorMessage);
-            }
-          },
-        };
-  
-        // Open Razorpay only when the subscription creation is successful
-        const razorpay = new window.Razorpay(options);
-        razorpay.open();
-      } else {
-        // Handle the case where the subscription creation failed
-        const errorMessage =
-          response.data?.message ||
-          "Failed to create subscription. Please try again.";
-        setError(errorMessage);
-        toast.error(errorMessage, { style: { color: "red" } });
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                      sessionid: sessionId,
+                    },
+                  }
+                );
+
+                navigate("payment/success");
+              } catch (error) {
+                console.error("Verification Error:", error);
+                navigate("payment/failure");
+              }
+            },
+          };
+
+          // Open Razorpay only when the subscription creation is successful
+          const razorpay = new window.Razorpay(options);
+          razorpay.open();
+        } else {
+          // Handle the case where the subscription creation failed
+        }
+      } catch (error) {
+        console.error("Subscription Error:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Subscription Error:", error);
-  
-      const errorMessage =
-        error.response?.data?.message ||
-        "Failed to create subscription. Please try again.";
-      setError(errorMessage);
-      toast.error(errorMessage, { style: { color: "red" } });
-    } finally {
-      setLoading(false);
     }
+    else {
+      navigate("/manage-subscription");
+    }
+
   };
-  
 
   useEffect(() => {
-    axios
-      .get(`${apiUrl}/api/subscription/plans`)
-      .then((response) => {
-        const tempPlans = [];
-        tempPlans.push(response.data.data.plans[2]);
-        tempPlans.push(response.data.data.plans[0]);
-        tempPlans.push(response.data.data.plans[1]);
-        // console.log(tempPlans);
-        setOriginalPlans(tempPlans);
+    window.scrollTo(0, 0);
+
+    // Fetch subscription plans and promotions concurrently
+    const fetchData = async () => {
+      try {
+        const [plansResponse, promotionsResponse] = await Promise.all([
+          axios.get(`${apiUrl}/api/subscription/plans`),
+          axios.get(`${apiUrl}/api/subscription/promotions`),
+        ]);
+
+        // Extract and reorder plans if needed
+        const plans = plansResponse.data?.data?.plans || [];
+        console.log('fetchedplans', plans)
+        setOriginalPlans(plans);
+        // setSelectedIndex(plans.)
+        plans.map((plan, index) => {
+          if (plan.interval === 12) setSelectedIndex(index);
+        });
+        setPromotionsData(promotionsResponse.data?.data[0] || []);
         setLoading(false);
-      })
-      .catch((error) => {
-        // console.error("Error retrieving session:", error);
-        // handle error
-        // console.log("not found api end points");
-        // console.log(error);
-        setError(error);
-      });
+      } catch (err) {
+        // Handle errors for both API calls
+        console.error("Error fetching data:", err);
+      }
+    };
+
+    fetchData();
   }, []);
-  //   console.log(selectedIndex);
-  // console.log(error);
-  const features = [
-    { title: "Custom Diet Plan", included: true },
-    { title: "Meal Sequencing", included: true },
-    { title: "Diabetic Specific Exercise Video Library", included: true },
-    { title: "24x7 AI Coach", included: true },
-    { title: "Medicine Reminder", included: true },
-    { title: "Scan to Share Report", included: true },
-    { title: "Exciting Rewards for Adherence", included: true },
-  ];
-  //   console.log(isModalOpen, !isAuthenticated);
+  console.log(promotionsData);
   return (
-    <div className="flex flex-col bg-white justify-center items-center">
+    <div className="flex flex-col bg-white justify-center items-center h-[100%]">
       <MobileInputModal
         open={isModalOpen}
         handleClose={handleClose}
         onLoginSuccess={handleLoginSuccess}
+        isPromotional={originalPlans[selectedIndex]?.isPromotional}
+        promotionCode={
+          originalPlans[selectedIndex]?.isPromotional
+            ? originalPlans[selectedIndex]?.promotion?.code
+            : ""
+        }
+        planId={originalPlans[selectedIndex]?.razorpayPlanId}
       />
-      <Toaster position="top-center" />
       <div
         style={{
           backgroundImage: `url(${bgImg})`,
@@ -214,35 +222,130 @@ const PlanScreen = () => {
           >
             Exclusively for you
           </Typography>
-          {/* {error && (
-            <span className="text-[15px] text-red-500 mt-3">{error}</span>
-          )} */}
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 pt-[20px] px-[16px] -mt-11 rounded-t-[16px] bg-white w-[100%]">
+      <div className="flex flex-col gap-3   -mt-11 rounded-t-[16px] bg-white w-[100%]">
         {loading ? (
           <Loading /> // Show loading spinner or message while data is loading
         ) : (
-          originalPlans.map((plan, index) => (
-            <PlanPicker
-              key={index}
-              id={plan.id}
-              month={plan.interval}
-              description={plan.item.description}
-              actualPrice={plan.item.originalAmount / 100}
-              discountedPrice={
-                plan.isPromotional
-                  ? plan.promotion.discountedAmount / 100
-                  : plan.item.unitAmount / 100
-              }
-              offerName={plan.isPromotional ? "INTRODUCTORY OFFER" : null}
-              isPromotional={plan.isPromotional}
-              promotionalCode={plan.isPromotional ? plan.promotion?.code : ""}
-              isSelected={selectedIndex === index}
-              onClick={() => setSelectedIndex(1)}
-            />
-          ))
+          <>
+            {promotionsData && (
+              <div
+                className="flex items-center w-full xs:h-[65px] sm:h-[82px] md:h-[92px] rounded-t-[16px] px-[16px] py-[8px]  flex-col gap-2" // Ensure a height
+                style={{
+                  backgroundImage: `url(${promotionsData?.imageUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                <div className="flex justify-between w-[100%]">
+                  <Typography
+                    sx={{
+                      fontFamily: "Urbanist, sans-serif", // Ensure font is loaded in your project
+                      fontSize: "14px",
+                      fontWeight: 700,
+                      lineHeight: "14.4px",
+                      letterSpacing: "-0.003em",
+                      textAlign: "left",
+                      textUnderlinePosition: "from-font",
+                      textDecorationSkipInk: "none",
+                    }}
+                  >
+                    {promotionsData?.description.toUpperCase()}{" "}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "Urbanist, sans-serif", // Ensure font is loaded in your project
+                      fontSize: "14px",
+                      fontWeight: 700,
+                      lineHeight: "14.4px",
+                      letterSpacing: "-0.003em",
+                      textAlign: "left",
+                      textUnderlinePosition: "from-font",
+                      textDecorationSkipInk: "none",
+                    }}
+                  >
+                    Expires in
+                  </Typography>
+                </div>
+                <div className="flex justify-between w-[100%]">
+                  {promotionsData.discountType === 1 ? (
+                    <Typography
+                      sx={{
+                        fontFamily: "Urbanist, sans-serif",
+                        fontSize: "20px",
+                        fontWeight: 900,
+                        lineHeight: "21.6px",
+                        letterSpacing: "-0.003em",
+                        textAlign: "left",
+                        textUnderlinePosition: "from-font",
+                        textDecorationSkipInk: "none",
+                      }}
+                    >
+                      {`Upto ${promotionsData?.discountValue}% off`}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      sx={{
+                        fontFamily: "Urbanist, sans-serif",
+                        fontSize: "20px",
+                        fontWeight: 900,
+                        lineHeight: "21.6px",
+                        letterSpacing: "-0.003em",
+                        textAlign: "left",
+                        textUnderlinePosition: "from-font",
+                        textDecorationSkipInk: "none",
+                      }}
+                    >
+                      {`Flat ${promotionsData?.discountValue} off`}
+                    </Typography>
+                  )}
+                  {/* <Typography
+                    sx={{
+                      fontFamily: "Urbanist, sans-serif",
+                      fontSize: "20px",
+                      fontWeight: 900,
+                      lineHeight: "21.6px",
+                      letterSpacing: "-0.003em",
+                      textAlign: "left",
+                      textUnderlinePosition: "from-font",
+                      textDecorationSkipInk: "none",
+                    }}
+                  >
+                    13:43
+                  </Typography> */}
+                  <Timer />
+                </div>
+              </div>
+            )}
+            {
+              <div className="w-[100%] px-[12px] flex flex-col gap-3 mt-[20px]">
+                {originalPlans.map((plan, index) => (
+                  <PlanPicker
+                    key={index}
+                    padding={" py-4"}
+                    id={plan.id}
+                    month={plan.interval}
+                    description={plan.item.description}
+                    actualPrice={plan.item.originalAmount / 100}
+                    discountedPrice={
+                      plan.isPromotional
+                        ? plan.promotion.discountedAmount / 100
+                        : plan.item.unitAmount / 100
+                    }
+                    offerName={plan.isPromotional ? "INTRODUCTORY OFFER" : null}
+                    isPromotional={plan.isPromotional}
+                    promotionalCode={
+                      plan.isPromotional ? plan.promotion?.code : ""
+                    }
+                    isSelected={selectedIndex === index}
+                  // onClick={() => setSelectedIndex(index)}
+                  />
+                ))}
+              </div>
+            }
+          </>
         )}
       </div>
 
@@ -289,14 +392,14 @@ const PlanScreen = () => {
       </div>
 
       {/* Sticky Buy button */}
-      <div className="sticky bottom-1 flex items-center justify-center w-[100%] ">
+      <div className="sticky bottom-5 flex items-center justify-center w-[100%] ">
         {!loading && (
           <BuyButton
             month={originalPlans[selectedIndex]?.interval}
             price={
               originalPlans[selectedIndex]?.isPromotional
                 ? originalPlans[selectedIndex]?.promotion?.discountedAmount /
-                  100
+                100
                 : originalPlans[selectedIndex]?.item?.unitAmount / 100
             }
             planId={originalPlans[selectedIndex]?.razorpayPlanId}
@@ -308,15 +411,18 @@ const PlanScreen = () => {
             }
             onClick={() => {
               const plan = originalPlans[selectedIndex];
+              console.log('second time plan', JSON.stringify(plan, null, Infinity))
+              console.log('razorpay id', plan.razorpayPlanId)
               handleSubscribe(
-                plan?.isPromotional
-                  ? plan?.promotion?.discountedAmount / 100
-                  : plan?.item?.unitAmount / 100, // Pass the calculated price
+                // plan?.isPromotional
+                //   ? plan?.promotion?.discountedAmount / 100
+                //   : plan?.item?.unitAmount / 100, // Pass the calculated price
                 plan?.razorpayPlanId, // Pass the plan ID
                 plan?.isPromotional, // Pass if the plan is promotional
                 plan?.isPromotional ? plan?.promotion?.code : null // Pass the promotional code if applicable
               );
             }} // Open modal on button click
+            text="Buy plan"
           />
         )}
       </div>

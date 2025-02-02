@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 const CustomTextArea = ({
@@ -11,33 +11,28 @@ const CustomTextArea = ({
   error = "",
 }) => {
   const handleInput = (event) => {
+    const newValue = event.target.value;
+
     // Auto-resize functionality
     event.target.style.height = "auto";
     event.target.style.height = `${event.target.scrollHeight}px`;
 
-    // Update the value through the onChange handler
+    // Update the local value
+    setLocalValue(newValue);
     onChange(event);
+
+    // Check if the input length is less than 30 characters
   };
 
   return (
-    <div className="w-[95%] ">
+    <div className="w-[95%]">
       <textarea
         placeholder={placeholder}
         rows={rows}
         cols={cols}
-        value={value}
         onChange={handleInput}
-        className={`w-full p-4 text-black rounded-[16px] border focus:outline-none focus:ring-0 ${
-          error ? "border-red-500" : "border-gray-300"
-        } ${className}`}
-        aria-invalid={error ? "true" : "false"}
-        aria-describedby={error ? "textarea-error" : undefined}
+        className={`w-full p-4 text-black rounded-[16px] border focus:outline-none focus:ring-0  ${className}`}
       />
-      {error && (
-        <span id="textarea-error" className="text-red-500 text-sm mt-1 block">
-          {error}
-        </span>
-      )}
     </div>
   );
 };

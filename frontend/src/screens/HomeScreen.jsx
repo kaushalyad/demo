@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import AiSection from "../components/HomeScreenComponents/AiSection";
 import Header from "../components/HomeScreenComponents/Header";
 import TestimonialCaraousel from "../components/TestimonialCaraousel";

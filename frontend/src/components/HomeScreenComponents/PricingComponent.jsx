@@ -35,7 +35,7 @@ export const PricingComponent = ({ className }) => {
         <div className="flex justify-around items-center py-4 bg-white rounded-t-2xl">
           <div className="flex flex-col justify-center items-between sm:gap-1">
             <span className="xs:text-[12px] sm:text-[18px] font-medium leading-[14.4px] text-left line-through text-[#818BA0]">
-              ₹5988
+              ₹2399
             </span>
 
             <span className="font-urbanist xs:text-[22px] sm:text-[30px] font-extrabold leading-[26.4px] tracking-[-0.01em] text-left  underline-offset-[0.1em] decoration-skip-ink-none text-[#252E49]">
