@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import { FiEdit } from "react-icons/fi"; // Import edit icon
 
@@ -8,6 +7,7 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
   const inputRefs = useRef([]);
 
   useEffect(() => {
+    // Focus on the first input field when component mounts
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
     }
@@ -17,34 +17,8 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
       setShowEditIcon(true);
     }, 5000);
 
-    // Call Web OTP API to listen for SMS
-    getOtpFromSms();
-
     return () => clearTimeout(timer);
   }, []);
-
-  const getOtpFromSms = async () => {
-    if ("OTPCredential" in window) {
-      try {
-        const otpCredential = await navigator.credentials.get({
-          otp: { transport: ["sms"] },
-        });
-
-        if (otpCredential && otpCredential.code) {
-          const otpArray = otpCredential.code.split("");
-          setOtp(otpArray);
-          onOtpSubmit(otpCredential.code);
-
-          // Focus on the last input field after auto-filling
-          if (inputRefs.current[length - 1]) {
-            inputRefs.current[length - 1].focus();
-          }
-        }
-      } catch (error) {
-        console.error("OTP auto-fill failed:", error);
-      }
-    }
-  };
 
   const handleChange = (index, e) => {
     const value = e.target.value;
@@ -82,7 +56,7 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
           key={index}
           type="text"
           inputMode="numeric"
-          autoComplete={index === 0 ? "one-time-code" : "off"} // Enable OTP auto-fill
+          autoComplete={index === 0 ? "one-time-code" : "off"} // Disable OTP auto-fill
           ref={(input) => (inputRefs.current[index] = input)}
           value={value}
           onChange={(e) => handleChange(index, e)}
