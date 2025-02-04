@@ -34,6 +34,11 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
           const otpArray = otpCredential.code.split("");
           setOtp(otpArray);
           onOtpSubmit(otpCredential.code);
+
+          // Focus on the last input field after auto-filling
+          if (inputRefs.current[length - 1]) {
+            inputRefs.current[length - 1].focus();
+          }
         }
       } catch (error) {
         console.error("OTP auto-fill failed:", error);
