@@ -17,8 +17,36 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
       setShowEditIcon(true);
     }, 5000);
 
+    // Call Web OTP API to listen for SMS and auto-fill OTP
+    getOtpFromSms();
+
     return () => clearTimeout(timer);
   }, []);
+
+  const getOtpFromSms = async () => {
+    if ("OTPCredential" in window) {
+      try {
+        const otpCredential = await navigator.credentials.get({
+          otp: { transport: ["sms"] }, // We are requesting SMS transport for OTP
+        });
+
+        if (otpCredential && otpCredential.code) {
+          const otpArray = otpCredential.code.split("");
+          setOtp(otpArray); // Set the OTP values in the state
+          onOtpSubmit(otpCredential.code); // Submit the OTP to the parent component
+
+          // Focus on the last input field after auto-filling
+          if (inputRefs.current[length - 1]) {
+            inputRefs.current[length - 1].focus();
+          }
+        }
+      } catch (error) {
+        console.error("OTP auto-fill failed:", error);
+      }
+    } else {
+      console.warn("Web OTP API is not supported in this browser.");
+    }
+  };
 
   const handleChange = (index, e) => {
     const value = e.target.value;
@@ -32,7 +60,7 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
     const combinedOtp = newOtp.join("");
     if (combinedOtp.length === length) onOtpSubmit(combinedOtp);
 
-    // Move to the next input
+    // Move to next input
     if (value && index < length - 1 && inputRefs.current[index + 1]) {
       inputRefs.current[index + 1].focus();
     }
@@ -56,7 +84,7 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
           key={index}
           type="text"
           inputMode="numeric"
-          autoComplete="off" // Disable autocomplete to avoid auto-filling
+          autoComplete="one-time-code" // Enable OTP auto-fill
           ref={(input) => (inputRefs.current[index] = input)}
           value={value}
           onChange={(e) => handleChange(index, e)}
