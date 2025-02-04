@@ -7,7 +7,7 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
   const inputRefs = useRef([]);
 
   useEffect(() => {
-    // Focus on the first input field when component mounts
+    // Focus on the first input field when the component mounts
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
     }
@@ -32,7 +32,7 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
     const combinedOtp = newOtp.join("");
     if (combinedOtp.length === length) onOtpSubmit(combinedOtp);
 
-    // Move to next input
+    // Move to the next input
     if (value && index < length - 1 && inputRefs.current[index + 1]) {
       inputRefs.current[index + 1].focus();
     }
@@ -56,13 +56,16 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
           key={index}
           type="text"
           inputMode="numeric"
-          autoComplete={index === 0 ? "one-time-code" : "off"} // Disable OTP auto-fill
+          autoComplete="off" // Disable autocomplete to avoid auto-filling
           ref={(input) => (inputRefs.current[index] = input)}
           value={value}
           onChange={(e) => handleChange(index, e)}
           onPaste={handlePaste}
           className={`w-[73px] h-[88px] bg-[#FFFFFF] rounded-[12px] text-[40px] font-extrabold text-center focus:outline-none 
-            font-urbanist ${isValidOtp ? "border-[#2563EB] focus:ring-[#2563EB]" : "border-[#DA1E2E]"} border-2`}
+            font-urbanist 
+            ${isValidOtp ? "border-[#2563EB]" : "border-[#DA1E2E]"} 
+            border-2 
+            focus:ring-0`} // No ring on focus for all inputs
         />
       ))}
 
