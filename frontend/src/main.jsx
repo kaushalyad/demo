@@ -1,30 +1,28 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 import PlanScreen from "./screens/PlanScreen.jsx";
 import PostPayment from "./components/PostPayment.jsx";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./router/ProtectedRoute.jsx";
 import { AuthProvider } from "./hooks/useAuth.jsx";
 import NotFound from "./components/NotFound.jsx";
 import Manage from "./components/Manage.jsx";
 import ManageResubscribe from "./components/ManageResubscribe.jsx";
-
 import RequestRefundEndSubscription from "./components/RequestRefundSubscription.jsx";
 import CancelFeedback from "./components/CancelFeedback.jsx";
 import Refund from "./components/Refund.jsx";
 import CancelSubscription from "./components/CancelSubscription.jsx";
-import PartnershipComponent from "./components/PartnershipComponent.jsx.jsx";
 import PartnershipScreen from "./screens/PartnershipScreen.jsx";
 import PartnershipPayment from "./components/PartnershipPayment.jsx";
+
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <StrictMode>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<App />} />
-          <Route path={`/plans`} element={<PlanScreen />} />
+          <Route path="/plans" element={<PlanScreen />} />
           <Route
             path="/plans/payment/success"
             element={
@@ -33,8 +31,6 @@ createRoot(document.getElementById("root")).render(
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<NotFound />} />
-
           <Route
             path="/manage-subscription"
             element={
@@ -115,8 +111,17 @@ createRoot(document.getElementById("root")).render(
               </ProtectedRoute>
             }
           />
-          <Route path="/beurer/success" element={<PartnershipPayment />} />
+          <Route
+            path="/beurer/success"
+            element={
+              <ProtectedRoute>
+                <PartnershipPayment />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/beurer" element={<PartnershipScreen />} />
+          <Route path="/*" element={<App />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </StrictMode>
