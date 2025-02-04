@@ -1,41 +1,32 @@
-import { useEffect, useRef, useState } from "react";
-import { FiEdit } from "react-icons/fi"; // Import edit icon
+import React, { useState, useEffect, useRef } from "react";
 
-const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
+const OTPInput = ({ length = 6, onOtpSubmit }) => {
   const [otp, setOtp] = useState(new Array(length).fill(""));
-  const [showEditIcon, setShowEditIcon] = useState(false);
   const inputRefs = useRef([]);
 
   useEffect(() => {
-    // Focus on the first input field when the component mounts
+    // Auto-focus first input on mount
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
     }
 
-    // Show edit icon after 5 seconds
-    const timer = setTimeout(() => {
-      setShowEditIcon(true);
-    }, 5000);
-
-    // Call Web OTP API to listen for SMS and auto-fill OTP
+    // Call Web OTP API to listen for SMS
     getOtpFromSms();
-
-    return () => clearTimeout(timer);
   }, []);
 
   const getOtpFromSms = async () => {
     if ("OTPCredential" in window) {
       try {
         const otpCredential = await navigator.credentials.get({
-          otp: { transport: ["sms"] }, // We are requesting SMS transport for OTP
+          otp: { transport: ["sms"] },
         });
 
         if (otpCredential && otpCredential.code) {
           const otpArray = otpCredential.code.split("");
-          setOtp(otpArray); // Set the OTP values in the state
-          onOtpSubmit(otpCredential.code); // Submit the OTP to the parent component
+          setOtp(otpArray);
+          onOtpSubmit(otpCredential.code);
 
-          // Focus on the last input field after auto-filling
+          // Auto-focus last input after filling
           if (inputRefs.current[length - 1]) {
             inputRefs.current[length - 1].focus();
           }
@@ -50,13 +41,13 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
 
   const handleChange = (index, e) => {
     const value = e.target.value;
-    if (isNaN(value)) return;
+    if (isNaN(value)) return; // Only allow numbers
 
     const newOtp = [...otp];
     newOtp[index] = value.substring(value.length - 1); // Allow only one digit
     setOtp(newOtp);
 
-    // Submit OTP when complete
+    // Submit OTP when all fields are filled
     const combinedOtp = newOtp.join("");
     if (combinedOtp.length === length) onOtpSubmit(combinedOtp);
 
@@ -78,30 +69,23 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
   };
 
   return (
-    <div className="flex gap-4 relative">
+    <div className="flex gap-2">
       {otp.map((value, index) => (
         <input
           key={index}
           type="text"
           inputMode="numeric"
-          autoComplete="one-time-code" // Enable OTP auto-fill
+          autoComplete={index === 0 ? "one-time-code" : "off"} // Enables OTP auto-fill
           ref={(input) => (inputRefs.current[index] = input)}
           value={value}
           onChange={(e) => handleChange(index, e)}
           onPaste={handlePaste}
-          className={`w-[73px] h-[88px] bg-[#FFFFFF] rounded-[12px] text-[40px] font-extrabold text-center focus:outline-none 
-            font-urbanist 
-            ${isValidOtp ? "border-[#2563EB]" : "border-[#DA1E2E]"} 
-            border-2 
-            focus:ring-0`} // No ring on focus for all inputs
+          className="w-12 h-12 text-xl text-center border border-gray-300 rounded focus:border-blue-500 outline-none"
+          maxLength={1}
         />
       ))}
-
-      {showEditIcon && (
-        <FiEdit className="absolute -right-10 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer" />
-      )}
     </div>
   );
 };
 
-export default OtpInput;
+export default OTPInput;
