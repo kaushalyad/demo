@@ -1,16 +1,45 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
-import { FiEdit } from "react-icons/fi"; // Import edit icon from react-icons
+import { FiEdit } from "react-icons/fi"; // Import edit icon
 
 const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
   const [otp, setOtp] = useState(new Array(length).fill(""));
+  const [showEditIcon, setShowEditIcon] = useState(false);
   const inputRefs = useRef([]);
 
   useEffect(() => {
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
     }
+
+    // Show edit icon after 5 seconds
+    const timer = setTimeout(() => {
+      setShowEditIcon(true);
+    }, 5000);
+
+    // Call Web OTP API to listen for SMS
+    getOtpFromSms();
+
+    return () => clearTimeout(timer);
   }, []);
+
+  const getOtpFromSms = async () => {
+    if ("OTPCredential" in window) {
+      try {
+        const otpCredential = await navigator.credentials.get({
+          otp: { transport: ["sms"] },
+        });
+
+        if (otpCredential && otpCredential.code) {
+          const otpArray = otpCredential.code.split("");
+          setOtp(otpArray);
+          onOtpSubmit(otpCredential.code);
+        }
+      } catch (error) {
+        console.error("OTP auto-fill failed:", error);
+      }
+    }
+  };
 
   const handleChange = (index, e) => {
     const value = e.target.value;
@@ -41,19 +70,6 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
     }
   };
 
-  const handleClick = (index) => {
-    inputRefs.current[index].setSelectionRange(1, 1);
-    if (index > 0 && !otp[index - 1]) {
-      inputRefs.current[otp.indexOf("")].focus();
-    }
-  };
-
-  const handleKeyDown = (index, e) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
-    }
-  };
-
   return (
     <div className="flex gap-4 relative">
       {otp.map((value, index) => (
@@ -65,14 +81,15 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {}, isValidOtp }) => {
           ref={(input) => (inputRefs.current[index] = input)}
           value={value}
           onChange={(e) => handleChange(index, e)}
-          onClick={() => handleClick(index)}
-          onKeyDown={(e) => handleKeyDown(index, e)}
           onPaste={handlePaste}
           className={`w-[73px] h-[88px] bg-[#FFFFFF] rounded-[12px] text-[40px] font-extrabold text-center focus:outline-none 
             font-urbanist ${isValidOtp ? "border-[#2563EB] focus:ring-[#2563EB]" : "border-[#DA1E2E]"} border-2`}
         />
       ))}
 
+      {showEditIcon && (
+        <FiEdit className="absolute -right-10 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer" />
+      )}
     </div>
   );
 };
