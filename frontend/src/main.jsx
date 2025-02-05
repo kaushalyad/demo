@@ -16,6 +16,7 @@ import Refund from "./components/Refund.jsx";
 import CancelSubscription from "./components/CancelSubscription.jsx";
 import PartnershipScreen from "./screens/PartnershipScreen.jsx";
 import PartnershipPayment from "./components/PartnershipPayment.jsx";
+import FooterInfo from "./components/FooterInfo.jsx";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -124,6 +125,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
+      {/* <FooterInfo /> */}
     </StrictMode>
   </BrowserRouter>
 );
