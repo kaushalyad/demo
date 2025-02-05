@@ -19,7 +19,7 @@ import PartnershipPayment from "./components/PartnershipPayment.jsx";
 import FooterInfo from "./components/FooterInfo.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
+  <BrowserRouter basename="/*">
     <StrictMode>
       <AuthProvider>
         <Routes>
