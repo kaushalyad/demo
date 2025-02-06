@@ -51,7 +51,7 @@ const PlanPicker = ({
         <div className="flex items-center gap-2">
           <input
             type="radio"
-            className="w-5 h-5 border-2 border-[#2563EB] rounded-full text-[#2563EB] bg-[#FFFFFF]"
+            className={`w-5 h-5 rounded-full accent-[#2563EB] bg-[#FFFFFF]`}
             checked={isSelected}
             onChange={onClick}
             name="plan"
