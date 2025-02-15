@@ -27,7 +27,6 @@ export const PricingComponent = ({ className }) => {
           paddingTop: "4px",
           color: "#FFFFFF",
         }}
-       
       >
         LIMITED PERIOD OFFER
       </Typography>
@@ -47,6 +46,7 @@ export const PricingComponent = ({ className }) => {
             </span>
           </div>
           <button
+            id="Join_Now_Home"
             style={{
               borderWidth: "1px",
               borderColor: "#2563EB",
